@@ -1,5 +1,4 @@
 package com.example.shelfapp
-
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
@@ -13,26 +12,21 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-
 class MainActivity : AppCompatActivity() {
-
     // on below line we are creating variables.
     private lateinit var mRequestQueue: RequestQueue
     private lateinit var booksList: ArrayList<BookModel>
     private lateinit var loadingPB: ProgressBar
     private lateinit var searchEdt: EditText
     private lateinit var searchBtn: ImageButton
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bookshelf_main)
-
         // on below line we are initializing
         // our variable with their ids.
         loadingPB = findViewById(R.id.idLoadingPB)
         searchEdt = findViewById(R.id.idEdtSearchBooks)
         searchBtn = findViewById(R.id.idBtnSearch)
-
         // adding click listener for search button
         searchBtn.setOnClickListener {
             loadingPB.visibility = View.VISIBLE
@@ -45,33 +39,24 @@ class MainActivity : AppCompatActivity() {
             // the books from the API.
             getBooksData(searchEdt.getText().toString());
         }
-
     }
-
     private fun getBooksData(searchQuery: String) {
-
         // creating a new array list.
         booksList = ArrayList()
-
         // below line is use to initialize
         // the variable for our request queue.
         mRequestQueue = Volley.newRequestQueue(this@MainActivity)
-
         // below line is use to clear cache this
         // will be use when our data is being updated.
         mRequestQueue.cache.clear()
-
         // below is the url for getting data from API in json format.
         val url = "https://www.googleapis.com/books/v1/volumes?q=$searchQuery"
-
         // below line we are  creating a new request queue.
         val queue = Volley.newRequestQueue(this@MainActivity)
-
         // on below line we are creating a variable for request
         // and initializing it with json object request
         val request = JsonObjectRequest(Request.Method.GET, url, null, { response ->
             loadingPB.visibility = View.GONE;
-
             // inside on response method we are extracting all our json data.
             try {
                 val itemsArray = response.getJSONArray("items")
@@ -113,20 +98,16 @@ class MainActivity : AppCompatActivity() {
                         infoLink,
                         buyLink
                     )
-
                     // below line is use to pass our modal
                     // class in our array list.
                     booksList.add(bookInfo)
-
                     // below line is use to pass our
                     // array list in adapter class.
                     val adapter = BookListAdapter(booksList, this@MainActivity)
-
                     // below line is use to add linear layout
                     // manager for our recycler view.
                     val layoutManager = GridLayoutManager(this, 3)
                     val mRecyclerView = findViewById<RecyclerView>(R.id.idRVBooks) as RecyclerView
-
                     // in below line we are setting layout manager and
                     // adapter to our recycler view.
                     mRecyclerView.layoutManager = layoutManager
@@ -135,8 +116,6 @@ class MainActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-
-
         }, { error ->
             // in this case we are simply displaying a toast message.
             Toast.makeText(this@MainActivity, "No books found..", Toast.LENGTH_SHORT)
@@ -145,6 +124,5 @@ class MainActivity : AppCompatActivity() {
         // at last we are adding our
         // request to our queue.
         queue.add(request)
-
     }
 }
